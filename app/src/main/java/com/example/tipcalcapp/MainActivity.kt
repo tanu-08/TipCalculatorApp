@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,10 +33,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
             MyApp {
                 TopHeader()
-
             }
 
         }
@@ -50,7 +50,6 @@ fun MyApp(content: @Composable () -> Unit) {
     }
 }
 
-@Preview
 @Composable
 fun TopHeader(totalPerPerson:Double = 0.0) {
     Surface(
@@ -72,13 +71,28 @@ fun TopHeader(totalPerPerson:Double = 0.0) {
     }
 }
 
+@Preview
+@Composable
+fun MainContent() {
+    Surface(modifier = Modifier
+        .padding(2.dp)
+        .fillMaxWidth(),
+        shape = RoundedCornerShape(corner = CornerSize(8.dp)),
+        border = BorderStroke(1.dp,Color.LightGray)
+    ) {
+        Column(){
+
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     TipCalcAppTheme {
         MyApp {
-            Text("Hello World")
+            TopHeader()
         }
     }
 }
