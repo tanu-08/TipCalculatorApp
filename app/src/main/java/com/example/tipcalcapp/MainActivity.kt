@@ -39,7 +39,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApp {
-                TopHeader()
                 MainContent()
             }
 
@@ -110,7 +109,6 @@ fun MainContent() {
 fun GreetingPreview() {
     TipCalcAppTheme {
         MyApp {
-            TopHeader()
             MainContent()
         }
     }
