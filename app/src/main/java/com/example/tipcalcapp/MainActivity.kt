@@ -6,7 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +24,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -63,85 +66,141 @@ fun MyApp(content: @Composable () -> Unit) {
 }
 
 @Composable
-fun TopHeader(totalPerPerson:Double = 0.0) {
+fun TopHeader(totalPerPerson: Double = 0.0) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(15.dp)
             .height(100.dp)
             .clip(shape = CircleShape.copy(all = CornerSize(12.dp))), color = Color(0xFFE9D7F7)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(12.dp)) {
-            Text(text = "Total Per Person",
-                style = MaterialTheme.typography.headlineSmall)
+            modifier = Modifier.padding(12.dp)
+        ) {
+            Text(
+                text = "Total Per Person",
+                style = MaterialTheme.typography.headlineSmall
+            )
             val total = "%.2f".format(totalPerPerson)
-            Text(text = "$$total",
+            Text(
+                text = "$$total",
                 style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold)
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
 
-@Preview
 @Composable
 fun MainContent() {
-    BillForm(){ billAmt ->
-
+    BillForm() { billAmt ->
     }
 }
 
-@Preview
 @Composable
-fun BillForm(modifier: Modifier = Modifier,
-             onValChange : (String) -> Unit = {},
-             ){
-    val totalBillState = remember{
+fun BillForm(
+    modifier: Modifier = Modifier,
+    onValChange: (String) -> Unit = {},
+) {
+
+    val totalBillState = remember {
         mutableStateOf("0")
     }
     val validState = remember(totalBillState.value) {
         totalBillState.value.trim().isNotEmpty()
     }
-    val keyboardController=LocalSoftwareKeyboardController.current
-    Surface(modifier = Modifier
-        .padding(2.dp)
-        .fillMaxWidth(),
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    val sliderPositionState = remember {
+        mutableStateOf(0f)
+    }
+    Surface(
+        modifier = Modifier
+            .padding(2.dp)
+            .fillMaxWidth(),
         shape = RoundedCornerShape(corner = CornerSize(8.dp)),
-        border = BorderStroke(1.dp,Color.LightGray)
+        border = BorderStroke(1.dp, Color.LightGray)
     ) {
-        Column(modifier = Modifier.padding(6.dp),
+        Column(
+            modifier = Modifier.padding(6.dp),
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start){
-            InputField(valueState = totalBillState , labelId = "Enter Bill" , enabled = true , isSingleLine = true,
+            horizontalAlignment = Alignment.Start
+        ) {
+            InputField(valueState = totalBillState,
+                labelId = "Enter Bill",
+                enabled = true,
+                isSingleLine = true,
                 onAction = KeyboardActions {
-                    if(!validState) return@KeyboardActions
+                    if (!validState) return@KeyboardActions
                     onValChange(totalBillState.value.trim())
                     keyboardController?.hide()
                 })
-            if(validState){
-                Row(modifier = Modifier.padding(3.dp),
-                    horizontalArrangement = Arrangement.Start) {
-                    Text(text = "Split", modifier = Modifier.align(
-                        alignment = Alignment.CenterVertically
-                    ))
+            if (validState) {
+                Row(
+                    modifier = Modifier.padding(3.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = "Split", modifier = Modifier.align(
+                            alignment = Alignment.CenterVertically
+                        )
+                    )
                     Spacer(modifier = Modifier.width(120.dp))
-                    Row(modifier = Modifier.padding(horizontal = 3.dp),
-                        horizontalArrangement = Arrangement.End) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 3.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
                         RoundIconButton(icon = Icons.Default.Remove,
                             onClick = { })
+
+                        Text(
+                            text = "3", modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 9.dp, end = 9.dp)
+                        )
                         RoundIconButton(icon = Icons.Default.Add,
                             onClick = { })
                     }
                 }
-            }
-            else{
+                //Tip Row
+                Row(modifier = Modifier.padding(horizontal = 3.dp, vertical = 12.dp)) {
+                    Text(
+                        text = "Tip", modifier = Modifier.align(
+                            alignment = Alignment.CenterVertically
+                        )
+                    )
+                    Spacer(modifier = Modifier.width(200.dp))
+                    Text(
+                        text = "$33.00",
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+                //Percentage Row
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "33%",
+                    )
+                    Spacer(modifier = Modifier.height(14.dp))
+                    //Slider
+                    Slider(value = sliderPositionState.value, onValueChange = { newVal ->
+                        sliderPositionState.value = newVal
+                    }, modifier = Modifier.padding(horizontal = 16.dp), steps = 5 , onValueChangeFinished = {
+
+                    })
+
+                }
+            } else {
 
             }
         }
     }
 
 }
-
 
 
 @Preview(showBackground = true)
